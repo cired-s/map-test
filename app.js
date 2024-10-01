@@ -38,6 +38,7 @@ const customMarkerIcon = L.icon({
     iconSize: [30, 45],  // 根據圖標的大小調整
     iconAnchor: [15, 45],
     popupAnchor: [0, -40],
+});
 
 // 計算磅秤和地磅的數量
 let scaleCount = 0;
