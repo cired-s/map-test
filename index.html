@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>度量衡器--地圖</title>
+    <title>度量衡器-地圖</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
@@ -22,41 +22,47 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* 篩選控制欄樣式 */
-        #filter-control {
+        /* 調整篩選功能框位置 */
+        .filter-container {
             position: absolute;
             top: 10px;
-            left: 10px;
-            background: white;
+            left: 10px; /* 左上角，確保不與縮放功能重疊 */
+            background-color: white;
             padding: 10px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+            z-index: 1000; /* 確保篩選框在地圖控制框之上 */
+        }
+
+        #distance {
+            display: none; /* 預設隱藏範圍輸入框 */
         }
     </style>
 </head>
 <body>
-    <h1>度量衡器--地圖</h1>
+    <h1>度量衡器-地圖</h1>
     
-    <!-- 篩選條件區 -->
-    <div id="filter-control">
-        <h3>篩選條件</h3>
-        <label for="distance">範圍 (km):</label>
-        <input type="number" id="distance" min="0" step="1" value="10">
-        
+    <!-- 篩選功能區域 -->
+    <div class="filter-container">
         <label for="brand">廠牌:</label>
         <select id="brand">
             <option value="">全部</option>
-            <option value="英展">英展</option>
-            <option value="廣企">廣企</option>
+            <option value="品牌A">品牌A</option>
+            <option value="品牌B">品牌B</option>
+            <!-- 可以根據需要添加更多選項 -->
         </select>
-        
+
+        <div id="distance">
+            <label for="range">範圍 (公里):</label>
+            <input type="number" id="range" min="0" step="1" placeholder="輸入範圍">
+        </div>
+
         <button id="apply-filter">應用篩選</button>
     </div>
-    
-    <!-- 地圖顯示區 -->
+
     <div id="map"></div>
 
     <script src="app.js"></script>
 </body>
 </html>
+
