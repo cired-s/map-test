@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>度量衡器--地圖</title>
+    <title>度量衡器-地圖</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
         #map {
             height: 500px;
         }
-
         /* 自定義控制欄框樣式 */
         .leaflet-control-info {
             background-color: white;
@@ -21,41 +20,22 @@
             border-radius: 5px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
-
-        /* 篩選控制欄樣式 */
-        #filter-control {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+        #filter-container {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>度量衡器--地圖</h1>
-    
-    <!-- 篩選條件區 -->
-    <div id="filter-control">
-        <h3>篩選條件</h3>
-        <label for="distance">範圍 (km):</label>
-        <input type="number" id="distance" min="0" step="1" value="10">
-        
-        <label for="brand">廠牌:</label>
-        <select id="brand">
-            <option value="">全部</option>
-            <option value="品牌1">品牌1</option>
-            <option value="品牌2">品牌2</option>
-        </select>
-        
-        <button id="apply-filter">應用篩選</button>
-    </div>
-    
-    <!-- 地圖顯示區 -->
+    <h1>度量衡器-地圖</h1>
     <div id="map"></div>
+
+    <!-- 新增篩選區塊 -->
+    <div id="filter-container">
+        <label for="range">篩選範圍 (公里):</label>
+        <input type="number" id="range" placeholder="輸入範圍 (公里)" min="0" />
+        <button id="apply-filter">應用篩選</button>
+        <p>點擊地圖選擇篩選定點。</p>
+    </div>
 
     <script src="app.js"></script>
 </body>
