@@ -17,6 +17,7 @@ const redIcon = L.icon({ iconUrl: 'images/marker-icon-2x-red.png', iconSize: [25
 
 let scaleCount = 0;
 let storeCount = 0;
+let selectedPoint = null; // 選定的點
 
 // 顯示磅秤和地秤數量
 const infoControl = L.control({ position: 'bottomright' });
@@ -48,10 +49,72 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     return R * c; // 距離 (公里)
 }
 
+// 顯示所有標記
+function showAllMarkers() {
+    // 清空圖層
+    scaleLayer.clearLayers();
+    storeLayer.clearLayers();
+    scaleCount = 0;
+    storeCount = 0;
+
+    // 加載磅秤資料
+    fetch('scale-data.json')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const checkResult = String(item.檢查合格與否).trim().toUpperCase();
+                const markerIcon = checkResult === "N" ? redIcon : blueIcon;
+
+                const scaleMarker = L.marker([item.latitude, item.longitude], { icon: markerIcon }).addTo(scaleLayer);
+                scaleMarker.bindPopup(`<b>${item.店名}</b><br>廠牌: ${item.廠牌}`);
+                scaleCount++;
+            });
+            updateInfoControl();
+        });
+
+    // 加載地磅資料
+    fetch('weighbridge-data.json')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const checkResult = String(item.檢查合格與否).trim().toUpperCase();
+                const markerIcon = checkResult === "N" ? redIcon : greenIcon;
+
+                const storeMarker = L.marker([item.latitude, item.longitude], { icon: markerIcon }).addTo(storeLayer);
+                storeMarker.bindPopup(`<b>${item.所有人}</b><br>廠牌: ${item.廠牌}`);
+                storeCount++;
+            });
+            updateInfoControl();
+        });
+}
+
+// 初始化顯示所有標記
+showAllMarkers();
+
+// 當點擊地圖時標定定點
+map.on('click', function(e) {
+    if (selectedPoint) {
+        map.removeLayer(selectedPoint); // 移除之前的標定點
+    }
+
+    // 在點擊位置放置一個標定點
+    selectedPoint = L.marker(e.latlng).addTo(map).bindPopup('篩選定點').openPopup();
+
+    // 顯示範圍輸入框
+    document.getElementById('distance').style.display = 'block';
+});
+
 // 篩選邏輯
 document.getElementById('apply-filter').addEventListener('click', function() {
     const distance = document.getElementById('distance').value;
     const selectedBrand = document.getElementById('brand').value;
+
+    if (!selectedPoint) {
+        alert('請先在地圖上選擇一個篩選定點。');
+        return;
+    }
+
+    const { lat, lng } = selectedPoint.getLatLng();
 
     // 清空圖層
     scaleLayer.clearLayers();
@@ -67,7 +130,7 @@ document.getElementById('apply-filter').addEventListener('click', function() {
                 const checkResult = String(item.檢查合格與否).trim().toUpperCase();
                 const markerIcon = checkResult === "N" ? redIcon : blueIcon;
 
-                const markerDistance = getDistanceFromLatLonInKm(25.03236, 121.51813, item.latitude, item.longitude);
+                const markerDistance = getDistanceFromLatLonInKm(lat, lng, item.latitude, item.longitude);
                 if ((selectedBrand === "" || item.廠牌 === selectedBrand) && markerDistance <= distance) {
                     const scaleMarker = L.marker([item.latitude, item.longitude], { icon: markerIcon }).addTo(scaleLayer);
                     scaleMarker.bindPopup(`<b>${item.店名}</b><br>廠牌: ${item.廠牌}`);
@@ -85,7 +148,7 @@ document.getElementById('apply-filter').addEventListener('click', function() {
                 const checkResult = String(item.檢查合格與否).trim().toUpperCase();
                 const markerIcon = checkResult === "N" ? redIcon : greenIcon;
 
-                const markerDistance = getDistanceFromLatLonInKm(25.03236, 121.51813, item.latitude, item.longitude);
+                const markerDistance = getDistanceFromLatLonInKm(lat, lng, item.latitude, item.longitude);
                 if ((selectedBrand === "" || item.廠牌 === selectedBrand) && markerDistance <= distance) {
                     const storeMarker = L.marker([item.latitude, item.longitude], { icon: markerIcon }).addTo(storeLayer);
                     storeMarker.bindPopup(`<b>${item.所有人}</b><br>廠牌: ${item.廠牌}`);
@@ -95,4 +158,5 @@ document.getElementById('apply-filter').addEventListener('click', function() {
             updateInfoControl();
         });
 });
+
 
