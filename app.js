@@ -32,6 +32,13 @@ const redIcon = L.icon({
     popupAnchor: [1, -34],
 });
 
+// 自定義的點擊地圖設置篩選定點的圖標
+const customMarkerIcon = L.icon({
+    iconUrl: 'images/marker-icon-2x-gold',  // 使用自定義PNG圖標
+    iconSize: [30, 45],  // 根據圖標的大小調整
+    iconAnchor: [15, 45],
+    popupAnchor: [0, -40],
+
 // 計算磅秤和地磅的數量
 let scaleCount = 0;
 let storeCount = 0;
@@ -68,7 +75,7 @@ map.on('click', function(e) {
     if (marker) {
         map.removeLayer(marker);
     }
-    marker = L.marker(e.latlng).addTo(map);
+    marker = L.marker(e.latlng, { icon: customMarkerIcon }).addTo(map);  // 使用自定義圖標
 });
 
 // 計算距離函數 (根據兩點經緯度計算距離)
@@ -159,6 +166,69 @@ function filterDataWithinRange(centerLatLng, range) {
             updateInfoControl();
         });
 }
+
+// 初始顯示所有標記
+function showAllMarkers() {
+    // 顯示磅秤
+    fetch('scale-data.json')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const latlng = L.latLng(item.latitude, item.longitude);
+                const checkResult = String(item.檢查合格與否).trim().toUpperCase();
+                const markerIcon = checkResult === "N" ? redIcon : blueIcon;
+
+                const scaleMarker = L.marker(latlng, { icon: markerIcon }).addTo(scaleLayer);
+                scaleMarker.bindPopup(`
+                    <h2>市場磅秤</h2>
+                    <b>${item.店名}</b><br>
+                    廠牌: ${item.廠牌}<br>
+                    型式: ${item.型式}<br>
+                    器號: ${item.器號}<br>
+                    Max (kg): ${item.Max_kg}<br>
+                    e (g): ${item.e_g}<br>
+                    檢定日期: ${item.檢定日期}<br>
+                    檢定合格單號: ${item.檢定合格單號}<br>
+                    檢查日期: ${item.檢查日期}<br>
+                    檢查合格與否: ${item.檢查合格與否}
+                `);
+                scaleCount++;
+            });
+            updateInfoControl();
+        });
+
+    // 顯示地磅
+    fetch('weighbridge-data.json')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const latlng = L.latLng(item.latitude, item.longitude);
+                const checkResult = String(item.檢查合格與否).trim().toUpperCase();
+                const markerIcon = checkResult === "N" ? redIcon : greenIcon;
+
+                const storeMarker = L.marker(latlng, { icon: markerIcon }).addTo(storeLayer);
+                storeMarker.bindPopup(`
+                    <h2>固定地秤</h2>
+                    <b>${item.所有人}</b><br>
+                    地址: ${item.地址}<br>
+                    廠牌: ${item.廠牌}<br>
+                    型號: ${item.型號}<br>
+                    器號: ${item.器號}<br>
+                    Max (t): ${item.Max_t}<br>
+                    e (kg): ${item.e_kg}<br>
+                    檢定合格期限: ${item.檢定合格期限}<br>
+                    檢定合格單號: ${item.檢定合格單號}<br>
+                    檢查日期: ${item.檢查日期}<br>
+                    檢查合格與否: ${item.檢查合格與否}
+                `);
+                storeCount++;
+            });
+            updateInfoControl();
+        });
+}
+
+// 在頁面載入時顯示所有標記
+showAllMarkers();
 
 // 點擊 "應用篩選" 按鈕時
 document.getElementById('apply-filter').addEventListener('click', function() {
