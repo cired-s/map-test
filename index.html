@@ -10,6 +10,7 @@
         #map {
             height: 500px;
         }
+
         /* 自定義控制欄框樣式 */
         .leaflet-control-info {
             background-color: white;
@@ -20,76 +21,42 @@
             border-radius: 5px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
-        /* 篩選條件區樣式 */
-        #filter-container {
+
+        /* 篩選控制欄樣式 */
+        #filter-control {
             position: absolute;
             top: 10px;
             left: 10px;
-            width: 200px;
+            background: white;
             padding: 10px;
-            background-color: white;
-            border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            cursor: move;
-            z-index: 1000; /* 確保篩選欄框位於地圖之上 */
-        }
-        #filter-container h2 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        #filter-container label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        #filter-container input {
-            width: 100%;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
     <h1>度量衡器-地圖</h1>
-    <div id="map"></div>
-
-    <div id="filter-container">
-        <h2>篩選條件</h2>
-        <label for="range">範圍 (公里):</label>
-        <input type="number" id="range" placeholder="輸入範圍">
+    
+    <!-- 篩選條件區 -->
+    <div id="filter-control">
+        <h3>篩選條件</h3>
+        <label for="distance">範圍 (km):</label>
+        <input type="number" id="distance" min="0" step="1" value="10">
+        
+        <label for="brand">廠牌:</label>
+        <select id="brand">
+            <option value="">全部</option>
+            <option value="品牌1">品牌1</option>
+            <option value="品牌2">品牌2</option>
+        </select>
+        
         <button id="apply-filter">應用篩選</button>
     </div>
+    
+    <!-- 地圖顯示區 -->
+    <div id="map"></div>
 
     <script src="app.js"></script>
-    <script>
-        // 讓篩選條件欄框可以拖動
-        const filterContainer = document.getElementById("filter-container");
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
-
-        filterContainer.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            initialX = filterContainer.offsetLeft;
-            initialY = filterContainer.offsetTop;
-            document.addEventListener("mousemove", onMouseMove);
-            document.addEventListener("mouseup", onMouseUp);
-        });
-
-        function onMouseMove(e) {
-            if (isDragging) {
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                filterContainer.style.left = initialX + dx + "px";
-                filterContainer.style.top = initialY + dy + "px";
-            }
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            document.removeEventListener("mousemove", onMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
-        }
-    </script>
 </body>
 </html>
