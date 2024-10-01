@@ -10,7 +10,6 @@
         #map {
             height: 500px;
         }
-
         /* 自定義控制欄框樣式 */
         .leaflet-control-info {
             background-color: white;
@@ -21,58 +20,76 @@
             border-radius: 5px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
-
-        /* 調整篩選功能框位置，移動到縮放功能下方 */
-        .filter-container {
+        /* 篩選條件區樣式 */
+        #filter-container {
             position: absolute;
-            top: 80px; /* 根據縮放功能的位置調整 */
-            right: 10px; /* 靠右，與縮放功能保持一致 */
-            background-color: white;
+            top: 10px;
+            left: 10px;
+            width: 200px;
             padding: 10px;
+            background-color: white;
             border: 1px solid #ccc;
             border-radius: 5px;
-            z-index: 1000; /* 確保篩選框在地圖控制框之上 */
-            width: 150px; /* 固定寬度，保持視覺一致性 */
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            cursor: move;
+            z-index: 1000; /* 確保篩選欄框位於地圖之上 */
         }
-
-        #distance {
-            display: none; /* 預設隱藏範圍輸入框 */
-        }
-
-        /* 篩選區標題樣式 */
-        .filter-title {
+        #filter-container h2 {
+            margin: 0;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 10px;
+        }
+        #filter-container label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        #filter-container input {
+            width: 100%;
         }
     </style>
 </head>
 <body>
     <h1>度量衡器-地圖</h1>
-    
-    <!-- 篩選功能區域 -->
-    <div class="filter-container">
-        <div class="filter-title">篩選條件</div>
-        <label for="brand">廠牌:</label>
-        <select id="brand">
-            <option value="">全部</option>
-            <option value="品牌A">品牌A</option>
-            <option value="品牌B">品牌B</option>
-            <!-- 可以根據需要添加更多選項 -->
-        </select>
+    <div id="map"></div>
 
-        <div id="distance">
-            <label for="range">範圍 (公里):</label>
-            <input type="number" id="range" min="0" step="1" placeholder="輸入範圍">
-        </div>
-
+    <div id="filter-container">
+        <h2>篩選條件</h2>
+        <label for="range">範圍 (公里):</label>
+        <input type="number" id="range" placeholder="輸入範圍">
         <button id="apply-filter">應用篩選</button>
     </div>
 
-    <div id="map"></div>
-
     <script src="app.js"></script>
+    <script>
+        // 讓篩選條件欄框可以拖動
+        const filterContainer = document.getElementById("filter-container");
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        filterContainer.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = filterContainer.offsetLeft;
+            initialY = filterContainer.offsetTop;
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+        });
+
+        function onMouseMove(e) {
+            if (isDragging) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                filterContainer.style.left = initialX + dx + "px";
+                filterContainer.style.top = initialY + dy + "px";
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+        }
+    </script>
 </body>
 </html>
-
-
