@@ -159,3 +159,11 @@ document.getElementById('apply-filter').addEventListener('click', function() {
         });
 });
 
+// 添加圖層控制，讓用戶可以選擇顯示哪些圖層
+const baseLayers = {};
+const overlays = {
+    "磅秤資訊": scaleLayer,
+    "地磅資訊": storeLayer
+};
+
+L.control.layers(baseLayers, overlays).addTo(map);
