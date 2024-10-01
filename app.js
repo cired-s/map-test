@@ -34,7 +34,7 @@ const redIcon = L.icon({
 
 // 自定義的點擊地圖設置篩選定點的圖標
 const customMarkerIcon = L.icon({
-    iconUrl: 'images/marker-icon-2x-gold',  // 使用自定義PNG圖標
+    iconUrl: 'images/marker-icon-2x-gold.png',  // 使用自定義PNG圖標
     iconSize: [30, 45],  // 根據圖標的大小調整
     iconAnchor: [15, 45],
     popupAnchor: [0, -40],
