@@ -106,7 +106,7 @@ function filterDataWithinRange(centerLatLng, range) {
 
                     const scaleMarker = L.marker(latlng, { icon: markerIcon }).addTo(scaleLayer);
                    // 為每個標記綁定 Popup，顯示磅秤資訊
-                    scaleMarker.bindPopup('
+                    scaleMarker.bindPopup(`
                         <h2>市場磅秤</h2>  <!-- 添加"市場磅秤"標題 -->
                         <b>${item.店名}</b><br>
                         廠牌: ${item.廠牌}<br>
@@ -118,7 +118,7 @@ function filterDataWithinRange(centerLatLng, range) {
                         檢定合格單號: ${item.檢定合格單號}<br>
                         檢查日期: ${item.檢查日期}<br>
                         檢查合格與否: ${item.檢查合格與否}
-                    ');
+                    `);
                     scaleCount++;
                 }
             });
@@ -139,7 +139,7 @@ function filterDataWithinRange(centerLatLng, range) {
 
                     const storeMarker = L.marker(latlng, { icon: markerIcon }).addTo(storeLayer);
                      // 為每個標記綁定 Popup，顯示地磅資訊
-                    storeMarker.bindPopup('
+                    storeMarker.bindPopup(`
                         <h2>固定地秤</h2>  <!-- 添加"固定地秤"標題 -->
                         <b>${item.所有人}</b><br>
                         地址: ${item.地址}<br>
@@ -152,7 +152,7 @@ function filterDataWithinRange(centerLatLng, range) {
                         檢定合格單號: ${item.檢定合格單號}<br>
                         檢查日期: ${item.檢查日期}<br>
                         檢查合格與否: ${item.檢查合格與否}
-                    ');
+                    `);
                     storeCount++;
                 }
             });
