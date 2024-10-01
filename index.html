@@ -22,20 +22,28 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* 調整篩選功能框位置 */
+        /* 調整篩選功能框位置，移動到縮放功能下方 */
         .filter-container {
             position: absolute;
-            top: 10px;
-            left: 10px; /* 左上角，確保不與縮放功能重疊 */
+            top: 80px; /* 根據縮放功能的位置調整 */
+            right: 10px; /* 靠右，與縮放功能保持一致 */
             background-color: white;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             z-index: 1000; /* 確保篩選框在地圖控制框之上 */
+            width: 150px; /* 固定寬度，保持視覺一致性 */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
         #distance {
             display: none; /* 預設隱藏範圍輸入框 */
+        }
+
+        /* 篩選區標題樣式 */
+        .filter-title {
+            font-weight: bold;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -44,6 +52,7 @@
     
     <!-- 篩選功能區域 -->
     <div class="filter-container">
+        <div class="filter-title">篩選條件</div>
         <label for="brand">廠牌:</label>
         <select id="brand">
             <option value="">全部</option>
@@ -65,4 +74,5 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 
