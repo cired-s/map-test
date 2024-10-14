@@ -42,7 +42,7 @@ const baseLayers = {};
 const overlays = {
     "磅秤": scaleLayer,
     "地秤": weighbridgeLayer
-    "優良磅秤市場": ex_scaleLayer
+    "優良市場": ex_scaleLayer
 };
 L.control.layers(baseLayers, overlays).addTo(map);
 
@@ -93,7 +93,7 @@ fetch('weighbridge-data.json')
 fetch('ex-management-scale-data.json')
     .then(response => response.json())
     .then(data => {
-        scaleData = data;
+        ex_scaleData = data;
         applyFilter();  // 初始顯示全部資料
     })
     .catch(error => console.error('Error loading ex-scale data:', error));
