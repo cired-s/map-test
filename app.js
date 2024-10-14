@@ -6,9 +6,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// 創建 LayerGroup：磅秤與地磅
+// 創建 LayerGroup：磅秤、地磅、優良磅秤
 const scaleLayer = L.layerGroup();
 const weighbridgeLayer = L.layerGroup();
+const ex_scaleLayer = L.layerGroup();
 
 // 定義自定義圖示
 const greenIcon = L.icon({
@@ -19,6 +20,12 @@ const greenIcon = L.icon({
 });
 const blueIcon = L.icon({
     iconUrl: 'images/marker-icon-2x-blue.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34]
+});
+const goldIcon = L.icon({
+    iconUrl: 'images/marker-icon-2x-gold.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34]
@@ -35,18 +42,20 @@ const baseLayers = {};
 const overlays = {
     "磅秤": scaleLayer,
     "地秤": weighbridgeLayer
+    "優良磅秤市場": ex_scaleLayer
 };
 L.control.layers(baseLayers, overlays).addTo(map);
 
 // 初始化數量
 let scaleCount = 0;
 let weighbridgeCount = 0;
+let ex_scaleCount = 0;
 
-// 計算磅秤和地磅的數量並顯示在右下角
+// 計算磅秤、地磅、優良磅秤的數量並顯示在右下角
 const infoControl = L.control({ position: 'bottomright' });
 infoControl.onAdd = function(map) {
     const div = L.DomUtil.create('div', 'leaflet-control-info');
-    div.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}`;
+    div.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}<br><b>優良市場數量:</b> ${ex_scaleCount}`;
     return div;
 };
 infoControl.addTo(map);
@@ -55,13 +64,14 @@ infoControl.addTo(map);
 function updateInfoControl() {
     const infoDiv = document.querySelector('.leaflet-control-info');
     if (infoDiv) {
-        infoDiv.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}`;
+        infoDiv.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}<br><b>優良市場數量:</b> ${ex_scaleCount}`;
     }
 }
 
 // 讀取 JSON 資料
 let scaleData = [];
 let weighbridgeData = [];
+let ex_scaleData = [];
 
 // 一開始讀取全部資料，並顯示在地圖上
 fetch('scale-data.json')
@@ -80,6 +90,14 @@ fetch('weighbridge-data.json')
     })
     .catch(error => console.error('Error loading weighbridge data:', error));
 
+fetch('ex-management-scale-data.json')
+    .then(response => response.json())
+    .then(data => {
+        scaleData = data;
+        applyFilter();  // 初始顯示全部資料
+    })
+    .catch(error => console.error('Error loading ex-scale data:', error));
+
 // 添加篩選功能
 document.getElementById('apply-filter').addEventListener('click', applyFilter);
 
@@ -87,8 +105,10 @@ function applyFilter() {
     // 清空圖層與計數
     scaleLayer.clearLayers();
     weighbridgeLayer.clearLayers();
+    ex_scaleLayer.clearLayers();
     scaleCount = 0;
     weighbridgeCount = 0;
+    ex_scaleCount = 0;
 
     // 獲取多選的縣市，並將 "台" 統一轉換為 "臺"
     const selectedCities = Array.from(document.getElementById('city-filter').selectedOptions)
@@ -159,6 +179,24 @@ function applyFilter() {
             }
         });
     }
+    
+    // 過濾並顯示優良磅秤資料
+    if (selectedLayer === 'all' || selectedLayer === 'ex_scale') {
+        ex_scaleData.forEach(item => {
+            // 將資料中的 "台" 轉換為 "臺"，以匹配篩選條件
+            const cityName = item.縣市.replace(/台/g, '臺');
+            if (citiesToFilter.includes(cityName)) { // 如果磅秤資料屬於選擇的縣市之一
+                const ex_scalemarker = L.marker([item.latitude, item.longitude], { icon: goldIcon }).addTo(ex_scaleLayer);
+                ex_scalemarker.bindPopup(`
+                <h2>優良磅秤計量管理市場(業者)</h2>
+                <b>${item.市場名稱 || '無'}</b><br>
+                地址: ${item.地址 || '無'}<br>
+                證書有效日期: ${item.證書有效日期 || '無'}
+                `);
+                ex_scaleCount++;
+            }
+        });
+    }
 
     // 更新數量顯示
     updateInfoControl();
@@ -166,8 +204,8 @@ function applyFilter() {
     // 將圖層添加到地圖
     
         scaleLayer.addTo(map);
-    
         weighbridgeLayer.addTo(map);
+        ex_scaleLayer.addTo(map);
  }
 
 
