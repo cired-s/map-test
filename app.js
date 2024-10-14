@@ -41,7 +41,7 @@ const redIcon = L.icon({
 const baseLayers = {};
 const overlays = {
     "磅秤": scaleLayer,
-    "地秤": weighbridgeLayer
+    "地秤": weighbridgeLayer,
     "優良市場": ex_scaleLayer
 };
 L.control.layers(baseLayers, overlays).addTo(map);
