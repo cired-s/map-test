@@ -64,7 +64,7 @@ let ex_dispenserCount = 0;
 const infoControl = L.control({ position: 'bottomright' });
 infoControl.onAdd = function(map) {
     const div = L.DomUtil.create('div', 'leaflet-control-info');
-    div.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}<br><b>優良加油站數量:</b> ${ex_dispenserCount}`;
+    div.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}<br><b>優良市場數量:</b> ${ex_scaleCount}<br><b>優良加油站數量:</b> ${ex_dispenserCount}`;
     return div;
 };
 infoControl.addTo(map);
@@ -73,7 +73,7 @@ infoControl.addTo(map);
 function updateInfoControl() {
     const infoDiv = document.querySelector('.leaflet-control-info');
     if (infoDiv) {
-        infoDiv.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}<br><b>優良加油站數量:</b> ${ex_dispenserCount}`;
+        infoDiv.innerHTML = `<b>磅秤數量:</b> ${scaleCount}<br><b>地秤數量:</b> ${weighbridgeCount}<br><b>優良市場數量:</b> ${ex_scaleCount}<br><b>優良加油站數量:</b> ${ex_dispenserCount}`;
     }
 }
 
