@@ -88,6 +88,7 @@ fetch('scale-data.json')
     .then(response => response.json())
     .then(data => {
         scaleData = data;
+        console.log("Scale Data:", scaleData); // 新增這行
         applyFilter();  // 初始顯示全部資料
     })
     .catch(error => console.error('Error loading scale data:', error));
@@ -96,6 +97,7 @@ fetch('weighbridge-data.json')
     .then(response => response.json())
     .then(data => {
         weighbridgeData = data;
+        console.log("Weighbridge Data:", weighbridgeData); // 新增這行
         applyFilter();  // 初始顯示全部資料
     })
     .catch(error => console.error('Error loading weighbridge data:', error));
@@ -104,6 +106,7 @@ fetch('weighbridge-data.json')
     //.then(response => response.json())
     //.then(data => {
        // ex_scaleData = data;
+       // console.log("Ex-Scale Data:", ex_scaleData); // 新增這行
        // applyFilter();  // 初始顯示全部資料
    // })
     //.catch(error => console.error('Error loading ex-scale data:', error));
@@ -111,6 +114,7 @@ fetch('ex-management-dispenser-data.json')
     .then(response => response.json())
     .then(data => {
         ex_dispenserData = data;
+        console.log("Ex-dispenser Data:", ex_dispenserData); // 新增這行
         applyFilter();  // 初始顯示全部資料
     })
     .catch(error => console.error('Error loading ex-dispenser data:', error));
@@ -133,7 +137,10 @@ function applyFilter() {
     const selectedCities = Array.from(document.getElementById('city-filter').selectedOptions)
                                 .map(option => option.value.replace(/台/g, '臺'));
     const selectedLayer = document.getElementById('layer-filter').value;
-      
+    //
+    console.log("Selected Cities:", selectedCities);
+    console.log("Selected Layer:", selectedLayer);
+    //
 
     // 如果沒有選擇縣市，預設顯示所有
     const defaultCities = ['臺北市', '新北市', '基隆市','桃園市','臺中市','臺南市','高雄市','新竹縣','苗栗縣','彰化縣','南投縣','雲林縣','嘉義縣','屏東縣','宜蘭縣','花蓮縣','臺東縣','澎湖縣','金門縣','連江縣','新竹市','嘉義市'];
@@ -150,6 +157,7 @@ function applyFilter() {
                 const checkResult = String(item.檢查合格與否).trim().toUpperCase();
                 const markerIcon = item.檢查合格與否 === 'N' ? redIcon : blueIcon;
                 const marker = L.marker([item.latitude, item.longitude], { icon: markerIcon }).addTo(scaleLayer);
+                console.log("Marker added for:", item); // 新增這行
                 marker.bindPopup(`
                 <h2>市場磅秤</h2>
                 <b>${item.店名 || '無'}</b><br>
@@ -179,6 +187,7 @@ function applyFilter() {
                 const checkResult = String(item.檢查合格與否).trim().toUpperCase();
                 const markerIcon = item.檢查合格與否 === 'N' ? redIcon : greenIcon;
                 const weighbridgemarker = L.marker([item.latitude, item.longitude], { icon: markerIcon }).addTo(weighbridgeLayer);
+                console.log("Marker added for:", item); // 新增這行
                 weighbridgemarker.bindPopup(`
                 <h2>固定地秤</h2>  <!-- 添加"固定地秤"標題 -->
                 <b>${item.所有人 || '無'}</b><br>
@@ -206,6 +215,7 @@ function applyFilter() {
            // const cityName = item.縣市.replace(/台/g, '臺');
            // if (citiesToFilter.includes(cityName)) { // 如果磅秤資料屬於選擇的縣市之一
                // const ex_scalemarker = L.marker([item.latitude, item.longitude], { icon: goldIcon }).addTo(ex_scaleLayer);
+               //console.log("Marker added for:", item); // 新增這行
                // ex_scalemarker.bindPopup(`
                // <h2>優良磅秤計量管理市場(業者)</h2>
                // <b>${item.市場名稱 || '無'}</b><br>
@@ -222,6 +232,7 @@ function applyFilter() {
             const cityName = item.縣市.replace(/台/g, '臺');
             if (citiesToFilter.includes(cityName)) { // 如果磅秤資料屬於選擇的縣市之一
                 const ex_dispensermarker = L.marker([item.latitude, item.longitude], { icon: camelIcon }).addTo(ex_dispenserLayer);
+                console.log("Marker added for:", item); // 新增這行
                 ex_dispensermarker.bindPopup(`
                 <h2>優良計量管理加油站</h2>
                 <b>${item.加油站名稱 || '無'}</b><br>
