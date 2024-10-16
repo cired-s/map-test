@@ -9,7 +9,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // 創建 LayerGroup：磅秤、地磅、優良磅秤、優良加油站
 const scaleLayer = L.layerGroup();
 const weighbridgeLayer = L.layerGroup();
-//const ex_scaleLayer = L.layerGroup();
+const ex_scaleLayer = L.layerGroup();
 const ex_dispenserLayer = L.layerGroup();
 
 // 定義自定義圖示
@@ -49,7 +49,7 @@ const baseLayers = {};
 const overlays = {
     "磅秤": scaleLayer,
     "地秤": weighbridgeLayer,
-    //"優良市場": ex_scaleLayer,
+    "優良市場": ex_scaleLayer,
     "優良加油站": ex_dispenserLayer
 };
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -57,7 +57,7 @@ L.control.layers(baseLayers, overlays).addTo(map);
 // 初始化數量
 let scaleCount = 0;
 let weighbridgeCount = 0;
-//let ex_scaleCount = 0;
+let ex_scaleCount = 0;
 let ex_dispenserCount = 0;
 
 // 計算磅秤、地磅、優良磅秤、優良加油站的數量並顯示在右下角
@@ -80,7 +80,7 @@ function updateInfoControl() {
 // 讀取 JSON 資料
 let scaleData = [];
 let weighbridgeData = [];
-//let ex_scaleData = [];
+let ex_scaleData = [];
 let ex_dispenserData = [];
 
 // 一開始讀取全部資料，並顯示在地圖上
@@ -102,14 +102,14 @@ fetch('weighbridge-data.json')
     })
     .catch(error => console.error('Error loading weighbridge data:', error));
 
-//fetch('ex-management-scale-data.json')
-    //.then(response => response.json())
-    //.then(data => {
-       // ex_scaleData = data;
-       // console.log("Ex-Scale Data:", ex_scaleData); // 新增這行
-       // applyFilter();  // 初始顯示全部資料
-   // })
-    //.catch(error => console.error('Error loading ex-scale data:', error));
+fetch('ex-management-scale-data.json')
+    .then(response => response.json())
+    .then(data => {
+        ex_scaleData = data;
+        console.log("Ex-Scale Data:", ex_scaleData); // 新增這行
+        applyFilter();  // 初始顯示全部資料
+    })
+    .catch(error => console.error('Error loading ex-scale data:', error));
 fetch('ex-management-dispenser-data.json')
     .then(response => response.json())
     .then(data => {
@@ -126,11 +126,11 @@ function applyFilter() {
     // 清空圖層與計數
     scaleLayer.clearLayers();
     weighbridgeLayer.clearLayers();
-    //ex_scaleLayer.clearLayers();
+    ex_scaleLayer.clearLayers();
     ex_dispenserLayer.clearLayers();
     scaleCount = 0;
     weighbridgeCount = 0;
-    //ex_scaleCount = 0;
+    ex_scaleCount = 0;
     ex_dispenserCount = 0;
 
     // 獲取多選的縣市，並將 "台" 統一轉換為 "臺"
@@ -209,22 +209,23 @@ function applyFilter() {
     }
     
     // 過濾並顯示優良磅秤資料
-    //if (selectedLayer === 'all' || selectedLayer === 'ex_scale') {
-        //ex_scaleData.forEach(item => {
+    if (selectedLayer === 'all' || selectedLayer === 'ex_scale') {
+        ex_scaleData.forEach(item => {
             // 將資料中的 "台" 轉換為 "臺"，以匹配篩選條件
-           // const cityName = item.縣市.replace(/台/g, '臺');
-           // if (citiesToFilter.includes(cityName)) { // 如果磅秤資料屬於選擇的縣市之一
-               // const ex_scalemarker = L.marker([item.latitude, item.longitude], { icon: goldIcon }).addTo(ex_scaleLayer);
-               //console.log("Marker added for:", item); // 新增這行
-               // ex_scalemarker.bindPopup(`
-               // <h2>優良磅秤計量管理市場(業者)</h2>
-               // <b>${item.市場名稱 || '無'}</b><br>
-               // 地址: ${item.地址 || '無'}<br>
-               // 證書有效日期: ${item.證書有效日期 || '無'}
-               // `);
-               // ex_scaleCount++;
-           // }
-        //});
+            const cityName = item.縣市.replace(/台/g, '臺');
+            if (citiesToFilter.includes(cityName)) { // 如果磅秤資料屬於選擇的縣市之一
+                const ex_scalemarker = L.marker([item.latitude, item.longitude], { icon: goldIcon }).addTo(ex_scaleLayer);
+                console.log("Marker added for:", item); // 新增這行
+                ex_scalemarker.bindPopup(`
+                <h2>優良磅秤計量管理市場(業者)</h2>
+                <b>${item.市場名稱 || '無'}</b><br>
+                地址: ${item.地址 || '無'}<br>
+                證書有效日期: ${item.證書有效日期 || '無'}
+                `);
+                ex_scaleCount++;
+            }
+        });
+    }
     // 過濾並顯示優良加油站資料
     if (selectedLayer === 'all' || selectedLayer === 'ex_dispenser') {
         ex_dispenserData.forEach(item => {
@@ -251,7 +252,7 @@ function applyFilter() {
     
         scaleLayer.addTo(map);
         weighbridgeLayer.addTo(map);
-        //ex_scaleLayer.addTo(map);
+        ex_scaleLayer.addTo(map);
         ex_dispenserLayer.addTo(map); 
  }
 
