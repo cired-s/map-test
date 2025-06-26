@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>度量衡器地圖</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <style>
+        /* 確保 HTML 和 BODY 佔滿整個畫面 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* 防止滾動條 */
+        }
+
+        /* 讓地圖充滿整個畫面 */
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh; /* 設為視窗高度 */
+        }
+        
+        /* 調整控制面板樣式 */
+        .leaflet-control-filter {
+            background: white;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            /* **將篩選框的寬度設為 250px** */
+            width: 250px; 
+            max-height: calc(100vh - 120px); 
+            overflow-y: auto; 
+            box-sizing: border-box; 
+        }
+        .leaflet-control-filter label {
+            display: block; 
+            margin-top: 8px; 
+            margin-bottom: 3px;
+        }
+        .leaflet-control-filter select, 
+        .leaflet-control-filter input[type="text"],
+        .leaflet-control-filter input[type="file"] { 
+            width: 100%;
+            padding: 5px; 
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box; 
+        }
+        .leaflet-control-filter button {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px; 
+            border-radius: 3px;
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+        .leaflet-control-filter button:hover {
+            background: #0056b3; 
+        }
+
+        /* 新增：JSON 檔案區塊的樣式 */
+        .json-upload-section {
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .json-upload-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 0;
+            margin-bottom: 5px;
+        }
+        .json-upload-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .json-upload-toggle-icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        .json-upload-content {
+            overflow: hidden; 
+            max-height: 0; 
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 0;
+        }
+        .json-upload-content.expanded {
+            max-height: 500px; 
+            padding-bottom: 10px;
+        }
+
+        .leaflet-control-info {
+            background: rgba(255, 255, 255, 0.8); 
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 1000;
+            width: 200px;
+        }
+        /* 文字標題框 */
+        .leaflet-control-title {
+            background: #f7ff07;
+            padding: 10px 10px;
+            font-size: 24px;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            /* **將標題框的寬度設為 250px** */
+            width: 250px; 
+            /* 調整 box-sizing 確保 padding 和 border 不會增加總寬度 */
+            box-sizing: border-box; 
+        }
+        /* 自訂叢集圖示的共同樣式 */
+        .cluster-icon {
+            border-radius: 50%;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 5px rgba(0,0,0,0.4);
+            border: 2px solid white; 
+        }
+
+        /* 不同大小的叢集圖示 */
+        .cluster-small {
+            width: 30px; 
+            height: 30px;
+            font-size: 14px;
+        }
+        .cluster-medium {
+            width: 40px; 
+            height: 40px;
+            font-size: 16px;
+        }
+        .cluster-large {
+            width: 50px; 
+            height: 50px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+        
+    <div id="map"></div>
+
+
+
+    <script src="map.js"></script> <!-- 路徑更新為 map.js -->
+</body>
+</html>
