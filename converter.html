@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料excel檔轉json檔</title>
+    <!-- 引入 Tailwind CSS CDN 以實現快速響應式設計和美觀樣式 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自定義字體 */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* 淺灰色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 確保至少佔滿視窗高度 */
+            padding: 1rem; /* 增加內邊距 */
+        }
+        .container {
+            background-color: white;
+            padding: 2.5rem; /* 增加內邊距 */
+            border-radius: 1rem; /* 更大的圓角 */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* 更好的陰影 */
+            max-width: 4xl; /* 最大寬度 */
+            width: 100%;
+            text-align: center;
+            margin: auto; /* 確保在小螢幕上也居中 */
+        }
+        h1 {
+            color: #374151; /* 深灰色標題 */
+            margin-bottom: 1.5rem; /* 增加間距 */
+        }
+        /* 隱藏原始的檔案上傳按鈕 */
+        #upload {
+            display: none;
+        }
+        /* 自定義檔案上傳按鈕樣式 */
+        #uploadLabel {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #4f46e5; /* 靛藍色 */
+            color: white;
+            cursor: pointer;
+            border-radius: 0.625rem; /* 圓角 */
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #uploadLabel:hover {
+            background-color: #4338ca; /* 較深的靛藍色 */
+            transform: translateY(-2px); /* 輕微上浮效果 */
+        }
+        /* 轉換完成訊息的樣式 */
+        #statusMessage {
+            color: #10b981; /* 綠色成功訊息 */
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        /* 錯誤訊息樣式 */
+        #errorMessage {
+            color: #ef4444; /* 紅色錯誤訊息 */
+            font-weight: bold;
+            margin-top: 1rem;
+            text-align: left;
+            padding: 0.75rem;
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-radius: 0.5rem;
+        }
+        /* 按鈕樣式 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 0.625rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-return {
+            background-color: #6b7280; /* 灰色 */
+            color: white;
+        }
+        .btn-return:hover {
+            background-color: #4b5563; /* 較深的灰色 */
+            transform: translateY(-2px);
+        }
+        .btn-map {
+            background-color: #0d9488; /* 綠松石色 */
+            color: white;
+        }
+        .btn-map:hover {
+            background-color: #0f766e; /* 較深的綠松石色 */
+            transform: translateY(-2px);
+        }
+        /* 下拉選單樣式 */
+        select {
+            padding: 0.625rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            color: #374151;
+            background-color: white;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        label {
+            color: #4b5563; /* 深灰色標籤文字 */
+            font-weight: 500;
+            display: block; /* 讓標籤獨立一行 */
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-extrabold">資料excel檔轉json檔</h1>
+
+        <div class="mb-6 text-left">
+            <!-- 檔案類型選擇 -->
+            <label for="fileType">選擇度量衡器資料類型：</label>
+            <select id="fileType" class="w-full">
+                <option value="scale-data">市場磅秤 (非自動衡器)</option>
+                <option value="weighbridge-data">地秤 (固定地秤)</option>
+                <option value="tank-data">槽秤 (非連續累計自動衡器)</option>
+                <option value="loading-scale-data">裝料秤 (重力式自動裝料衡器)</option>
+                <option value="dispenser-data">加油機 (油量計)</option>
+                <option value="gas-machine-data">加氣機 (液化石油氣流量計)</option>
+                <option value="charger-data">充電樁 (電動車輛供電設備)</option>
+                <option value="intervalspeed-data">區間測速 (區間平均速率裝置)</option>
+                <option value="ex-management-scale-data">優良計量管理磅秤市場</option>
+                <option value="ex-management-dispenser-data">優良計量管理加油站</option>
+            </select>
+        </div>
+
+        <!-- 自定義檔案上傳按鈕 -->
+        <label id="uploadLabel" for="upload">選擇 Excel 檔案</label>
+        <input type="file" id="upload" accept=".xlsx, .xls" />
+        
+        <!-- 轉換完成訊息 -->
+        <p id="statusMessage" class="mt-4 text-center hidden"></p>
+        <!-- 錯誤訊息 -->
+        <div id="errorMessage" class="mt-4 text-center hidden"></div>
+
+        <!-- 顯示 JSON 資料（選擇性） -->
+        <pre id="output" class="text-sm bg-gray-100 p-4 rounded-md mt-6 overflow-auto max-h-60 text-left hidden"></pre>
+
+        <!-- 轉換完成後的選擇按鈕 -->
+        <div id="actionButtons" class="mt-8 flex flex-col sm:flex-row justify-center gap-4 hidden">
+            <button id="backButton" class="btn btn-return w-full sm:w-auto">
+                <span class="mr-2">&#11013;&#65039;</span> 回上頁
+            </button>
+            <button id="runMapButton" class="btn btn-map w-full sm:w-auto">
+                <span class="mr-2">&#128205;</span> 執行地圖程式
+            </button>
+        </div>
+    </div>
+
+    <!-- *** 關鍵點：XLSX.full.min.js 必須在 converter.js 之前載入 *** -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="converter.js"></script>
+</body>
+</html>
