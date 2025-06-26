@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>度量衡器程式啟動器</title>
+    <!-- 引入 Tailwind CSS CDN 以實現快速響應式設計和美觀樣式 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自定義字體，如果需要 */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* 淺灰色背景 */
+        }
+        /* 讓內容垂直居中 */
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 確保至少佔滿視窗高度 */
+        }
+        /* 按鈕樣式調整 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px; /* 圓角 */
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #4f46e5; /* 靛藍色 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* 較深的靛藍色 */
+            transform: translateY(-2px); /* 輕微上浮效果 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* 灰色 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* 較深的灰色 */
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="flex-center p-4">
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full text-center space-y-8">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6">度量衡器地圖程式</h1>
+
+        <!-- 選擇說明訊息 -->
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-8" role="alert">
+            <p class="font-bold text-lg">重要提示</p>
+            <p>請先將地圖所需的 JSON 資料備妥（如轉換後的檔案），再執行地圖程式。</p>
+            <p>地圖程式需選擇所需JSON 資料、縣市、度量衡器、檢定結果，執行統計篩選，才會顯示圖標。</p>
+        </div>
+
+        <!-- 程式選擇按鈕 -->
+        <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+            <button onclick="window.location.href='map.html'" class="btn btn-primary w-full sm:w-auto">
+                <span class="mr-2">&#128205;</span> 執行地圖程式
+            </button>
+            <button onclick="window.location.href='converter.html'" class="btn btn-secondary w-full sm:w-auto">
+                <span class="mr-2">&#128452;&#65039;</span> 執行JSON轉檔程式
+            </button>
+        </div>
+
+        <!-- JSON 檔案偵測結果說明 -->
+        <div class="bg-blue-50 p-6 rounded-xl text-left shadow-inner">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4">JSON 檔案清單與說明</h2>
+            <p class="text-gray-600 mb-4">
+                <strong>說明：</strong> 
+                以下為各度量衡器excle資料檔轉換後的 JSON 檔清單，另請注意各度量衡器excle資料欄位正確性。
+            </p>
+            <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">scale-data.json:</span>
+                    <span class="text-gray-600">非自動衡器 (市場磅秤)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">weighbridge-data.json:</span>
+                    <span class="text-gray-600">固定地秤</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">tank-data.json:</span>
+                    <span class="text-gray-600">非連續累計自動衡器 (槽秤)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">loading-scale-data.json:</span>
+                    <span class="text-gray-600">重力式自動裝料衡器(裝料秤)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">dispenser-data.json:</span>
+                    <span class="text-gray-600">油量計 (加油機)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">gas-machine-data.json:</span>
+                    <span class="text-gray-600">液化石油氣流量計 (加氣機)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">charger-data.json:</span>
+                    <span class="text-gray-600">電動車輛供電設備 (充電樁)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">intervalspeed-data.json:</span>
+                    <span class="text-gray-600">區間平均速率裝置</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">ex-management-scale-data.json:</span>
+                    <span class="text-gray-600">優良衡器計量管理市場</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-gray-800 w-1/2 md:w-1/3">ex-management-dispenser-data.json:</span>
+                    <span class="text-gray-600">優良油量計計量管理加油站</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
